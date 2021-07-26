@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:qr_code_scan/service/kendaraan_terparkir.dart';
 import 'package:qrscan/qrscan.dart' as scanner;
 import 'package:permission_handler/permission_handler.dart';
@@ -20,10 +21,28 @@ class _HomeScreenState extends State<HomeScreen> {
     super.initState();
     getHistori();
     getParkingCapacity();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
   }
 
   List<HistoriKendaraan> historiKendaraan = [];
   int count = 0;
+  bool _statusMasuk = false;
+
+  Widget _buildSwitchListTile(
+    String title,
+    String description,
+    bool currentValue,
+    Function(bool)? updateValue,
+  ) {
+    return SwitchListTile(
+      title: Text(title),
+      subtitle: Text(description),
+      value: _statusMasuk,
+      onChanged: updateValue,
+    );
+  }
 
   void getParkingCapacity() async {
     late dio.Dio _http;
@@ -74,7 +93,7 @@ class _HomeScreenState extends State<HomeScreen> {
     response = await _http.get('/histori');
 
     if (response.data != null) {
-      print(response.data!);
+      // print(response.data!);
       HistoriResponse historiResponse =
           HistoriResponse.fromJson(response.data!);
       setState(() {
@@ -85,6 +104,7 @@ class _HomeScreenState extends State<HomeScreen> {
     }
   }
 
+  /// Setiap scan data baru masuk dan bertambah di home screen
   void getHistoryMasuk(String id) async {
     late dio.Dio _http;
     Map<String, dynamic> headers = {
@@ -227,6 +247,19 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                 ),
               ],
+            ),
+            _buildSwitchListTile(
+              'Filter Status',
+              'Hanya yang berstatus Masuk',
+              _statusMasuk,
+              (newValue) {
+                setState(() {
+                  _statusMasuk = newValue;
+                });
+                historiKendaraan
+                    .where((element) => element.status == 'masuk')
+                    .toList();
+              },
             ),
             Column(
               children: historiKendaraan.map((e) => HistoryCard(e)).toList(),
