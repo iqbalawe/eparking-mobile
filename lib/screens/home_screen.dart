@@ -184,8 +184,9 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         actions: [
           IconButton(
-            onPressed: () {},
-            icon: Icon(Icons.person),
+            onPressed: () => Navigator.pushNamedAndRemoveUntil(
+                context, '/', (route) => false),
+            icon: Icon(Icons.logout),
           ),
         ],
       ),
@@ -253,12 +254,12 @@ class _HomeScreenState extends State<HomeScreen> {
               'Hanya yang berstatus Masuk',
               _statusMasuk,
               (newValue) {
-                setState(() {
-                  _statusMasuk = newValue;
-                });
                 historiKendaraan
                     .where((element) => element.status == 'masuk')
                     .toList();
+                setState(() {
+                  _statusMasuk = newValue;
+                });
               },
             ),
             Column(
