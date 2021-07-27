@@ -37,12 +37,12 @@ class _HomeScreenState extends State<HomeScreen> {
       value: _statusMasuk,
       controlAffinity: ListTileControlAffinity.leading,
       onChanged: (newValue) {
-        // List<HistoriKendaraan> historiKendaraanFiltered = historiKendaraan
-        //     .where((element) => _statusMasuk ? element.status == 'masuk' : true)
-        //     .toList();
+        List<HistoriKendaraan> historiKendaraanFiltered = historiKendaraan
+            .where((element) => _statusMasuk ? element.status == 'masuk' : true)
+            .toList();
         setState(() {
           print(_statusMasuk);
-          // historiKendaraanDisplay = historiKendaraanFiltered;
+          historiKendaraanDisplay = historiKendaraanFiltered;
           _statusMasuk = newValue!;
         });
       },
