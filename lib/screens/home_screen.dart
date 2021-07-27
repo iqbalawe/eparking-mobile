@@ -27,22 +27,43 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   List<HistoriKendaraan> historiKendaraan = [];
+  List<HistoriKendaraan> historiKendaraanDisplay = [];
   int count = 0;
   bool _statusMasuk = false;
 
-  Widget _buildSwitchListTile(
-    String title,
-    String description,
-    bool currentValue,
-    Function(bool)? updateValue,
-  ) {
-    return SwitchListTile(
-      title: Text(title),
-      subtitle: Text(description),
+  Widget _checkBoxStatus() {
+    return CheckboxListTile(
+      title: Text('Filter Status Masuk'),
       value: _statusMasuk,
-      onChanged: updateValue,
+      controlAffinity: ListTileControlAffinity.leading,
+      onChanged: (newValue) {
+        // List<HistoriKendaraan> historiKendaraanFiltered = historiKendaraan
+        //     .where((element) => _statusMasuk ? element.status == 'masuk' : true)
+        //     .toList();
+        setState(() {
+          print(_statusMasuk);
+          // historiKendaraanDisplay = historiKendaraanFiltered;
+          _statusMasuk = newValue!;
+        });
+      },
     );
   }
+
+  // Widget _buildSwitchListTile() {
+  //   return SwitchListTile(
+  //     title: Text('Filter Status Masuk'),
+  //     value: _statusMasuk,
+  //     onChanged: (newValue) {
+  //       List<HistoriKendaraan> historiKendaraanFiltered = historiKendaraan
+  //           .where((element) => _statusMasuk ? element.status == 'masuk' : true)
+  //           .toList();
+  //       setState(() {
+  //         _statusMasuk = newValue;
+  //         historiKendaraanDisplay = historiKendaraanFiltered;
+  //       });
+  //     },
+  //   );
+  // }
 
   void getParkingCapacity() async {
     late dio.Dio _http;
@@ -98,6 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
           HistoriResponse.fromJson(response.data!);
       setState(() {
         historiKendaraan = historiResponse.data;
+        historiKendaraanDisplay = historiResponse.data;
       });
     } else {
       print('something wrong');
@@ -249,21 +271,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
-            _buildSwitchListTile(
-              'Filter Status',
-              'Hanya yang berstatus Masuk',
-              _statusMasuk,
-              (newValue) {
-                historiKendaraan
-                    .where((element) => element.status == 'masuk')
-                    .toList();
-                setState(() {
-                  _statusMasuk = newValue;
-                });
-              },
-            ),
+            _checkBoxStatus(),
             Column(
-              children: historiKendaraan.map((e) => HistoryCard(e)).toList(),
+              children:
+                  historiKendaraanDisplay.map((e) => HistoryCard(e)).toList(),
             ),
           ],
         ),
