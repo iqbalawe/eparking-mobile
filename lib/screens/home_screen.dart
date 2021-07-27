@@ -38,7 +38,8 @@ class _HomeScreenState extends State<HomeScreen> {
       controlAffinity: ListTileControlAffinity.leading,
       onChanged: (newValue) {
         List<HistoriKendaraan> historiKendaraanFiltered = historiKendaraan
-            .where((element) => _statusMasuk ? element.status == 'masuk' : true)
+            .where(
+                (element) => !_statusMasuk ? element.status == 'masuk' : true)
             .toList();
         setState(() {
           print(_statusMasuk);
